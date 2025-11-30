@@ -1,1 +1,15 @@
 venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+dist/
+build/
+.vscode/
+.idea/
+*.swp
+*.swo
