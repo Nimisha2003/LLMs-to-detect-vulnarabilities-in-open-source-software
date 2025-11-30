@@ -1,0 +1,79 @@
+[
+  {"code": "%1 = add i32 %a, %b", "label": 0},
+  {"code": "call void @unsafe_func()", "label": 1},
+  {"code": "eval(input())", "label": 1},
+  {"code": "x = a + b", "label": 0},
+  {"code": "os.system('rm -rf /')", "label": 1},
+  {"code": "exec('a=5')", "label": 1},
+
+  
+  {"code": "query = \"SELECT * FROM users WHERE name = '\" + name + \"'\"\\ncursor.execute(query)", "label": 1},
+  {"code": "cursor.execute('SELECT * FROM users WHERE name = %s', (name,))", "label": 0},
+
+  {"code": "os.system('ping -c 4 ' + host)", "label": 1},
+  {"code": "subprocess.run(['ping','-c','4', host])", "label": 0},
+
+  {"code": "data = request.GET['payload']\\neval(data)", "label": 1},
+  {"code": "payload = request.GET.get('payload')\\n# validate and parse safely\\njson.loads(payload)", "label": 0},
+
+  {"code": "import pickle\\nobj = pickle.loads(request.body)", "label": 1},
+  {"code": "import json\\nobj = json.loads(request.body)", "label": 0},
+
+  {"code": "yaml.load(stream)", "label": 1},
+  {"code": "yaml.safe_load(stream)", "label": 0},
+
+  {"code": "open('/safe/dir/' + filename).read()", "label": 1},
+  {"code": "from pathlib import Path\\nbase = Path('/safe/dir').resolve()\\npath = (base / filename).resolve()\\nif base in path.parents: open(path).read()", "label": 0},
+
+  {"code": "token = str(random.random())\\n# use token as auth", "label": 1},
+  {"code": "import secrets\\ntoken = secrets.token_urlsafe(32)", "label": 0},
+
+  {"code": "password_hash = hashlib.md5(password.encode()).hexdigest()", "label": 1},
+  {"code": "from passlib.hash import bcrypt\\npassword_hash = bcrypt.hash(password)", "label": 0},
+
+  {"code": "requests.get(url, verify=False)", "label": 1},
+  {"code": "requests.get(url)  # default verifies TLS", "label": 0},
+
+  {"code": "tmp = tempfile.mktemp()\\nopen(tmp, 'w').write(data)", "label": 1},
+  {"code": "with tempfile.NamedTemporaryFile(delete=False) as tf: tf.write(data)", "label": 0},
+
+  {"code": "data = subprocess.check_output('grep \"' + term + '\" /var/log/syslog', shell=True)", "label": 1},
+  {"code": "data = subprocess.check_output(['grep', term, '/var/log/syslog'])", "label": 0},
+
+  {"code": "config = json.loads(request.data)\\nobj = jsonpickle.loads(config['obj'])", "label": 1},
+  {"code": "config = json.loads(request.data)\\n# only accept known fields and types", "label": 0},
+
+  {"code": "xml = request.data\\nroot = ET.fromstring(xml)  # untrusted XML parsing", "label": 1},
+  {"code": "parser = defusedxml.ElementTree.parse(io.BytesIO(xml))\\nroot = parser.getroot()", "label": 0},
+
+  {"code": "secret = 'api_key=ABCD1234'  # hardcoded API key", "label": 1},
+  {"code": "secret = os.environ.get('API_KEY')  # loaded from env", "label": 0},
+
+  {"code": "pattern = '(a+)+$'\\nre.match(pattern, user_input)  # potential ReDoS", "label": 1},
+  {"code": "pattern = re.compile(r'^[a-z0-9]{1,100}$')\\nif pattern.match(user_input): process()", "label": 0},
+
+  {"code": "password = input('pw:')\\nif password == stored: print('ok')  # timing leak", "label": 1},
+  {"code": "import hmac\\nif hmac.compare_digest(password, stored): ...", "label": 0},
+
+  {"code": "os.chmod(path, 0o777)  # world-writable", "label": 1},
+  {"code": "os.chmod(path, 0o640)  # restrict permissions", "label": 0},
+
+  {"code": "open(config_path).read()  # no validation of path supplied by user", "label": 1},
+  {"code": "config_file = secure_join(base_dir, request.args['file'])\\nwith open(config_file) as f: ...", "label": 0},
+
+  {"code": "exec(code_from_user)  # executes arbitrary code", "label": 1},
+  {"code": "sandboxed = run_in_sandbox(code_from_user)  # or avoid exec entirely", "label": 0},
+
+  {"code": "session['user'] = request.args.get('user')  # no auth check", "label": 1},
+  {"code": "if validate_user(request): session['user'] = authenticated_user", "label": 0},
+
+  {"code": "eval('obj.%s' % user_field)  # dynamic attribute access via eval", "label": 1},
+  {"code": "if user_field in allowed_fields: getattr(obj, user_field)", "label": 0},
+
+  {"code": "open('/tmp/' + uploaded.filename, 'wb').write(uploaded.read())  # filename not sanitized", "label": 1},
+  {"code": "safe_name = secure_filename(uploaded.filename)\\nopen(os.path.join(upload_dir, safe_name),'wb').write(uploaded.read())", "label": 0},
+
+  {"code": "app.run(debug=True, host='0.0.0.0')  # debug exposed in production", "label": 1},
+  {"code": "app.run(debug=False)  # production mode", "label": 0}
+]
+
