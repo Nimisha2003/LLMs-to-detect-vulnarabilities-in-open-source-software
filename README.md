@@ -1,22 +1,43 @@
-How to run the project (quick start)
+# Code Sentinel — README
 
-Create and activate a virtual environment (PowerShell):
+Quick run and Git LFS notes
 
-python -m venv .venv ..venv\Scripts\Activate.ps1
+- This repository uses Git LFS for large model and dataset files. After cloning, install and enable Git LFS:
 
-Install dependencies (if a requirements.txt exists):
+  git lfs install
 
-pip install -r requirements.txt
+- Pull LFS objects for the current branch (required to get `tokenizer.json`, `vuln_model.pth`, and `merged_dataset.jsonl`):
 
-If there is no requirements.txt, at minimum install Streamlit to run the app:
+  git fetch origin
+  git reset --hard origin/main
+  git lfs pull origin main
 
-pip install streamlit
+- If you already have local changes you want to keep, back them up (create a branch or use `git stash`) before performing the `reset --hard`.
 
-Run the Streamlit app:
+How to run (Windows PowerShell)
 
-streamlit run app.py
+1. Create and activate a virtual environment:
+
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+
+2. Install dependencies (if `requirements.txt` exists):
+
+   pip install -r requirements.txt
+
+   If no requirements file is present, install at minimum:
+
+   pip install streamlit pandas plotly torch
+
+3. Run the Streamlit app:
+
+   streamlit run app.py
 
 Notes on running
 
-If the project requires additional system packages (CUDA, PyTorch variants, etc.), consult the repository README or train.py / model.py for dependency hints.
-On Windows Command Prompt use .venv\\Scripts\\activate.bat to activate the venv.
+- If the project requires additional system packages (CUDA, PyTorch variants, etc.), consult `train.py` / `model.py` for dependency hints.
+- On Windows Command Prompt use `.venv\\Scripts\\activate.bat` to activate the venv.
+
+Notes
+- The repo history was migrated to Git LFS and force-pushed; collaborators should re-clone or follow the LFS pull steps above.
+- `tokenizer.json` and `vuln_model.pth` must be present (non-pointer files) for the app to load correctly.
