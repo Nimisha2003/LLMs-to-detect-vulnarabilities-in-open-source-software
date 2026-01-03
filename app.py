@@ -207,7 +207,6 @@ if nav_choice == "Main":
         else:
             code_input = st.text_area(f"Paste your {target_language} code here:", height=250)
 
-    with tab2:
         if st.button("Analyze Code"):
             if not code_input.strip():
                 st.warning("Please enter or upload some code to analyze.")
@@ -217,6 +216,8 @@ if nav_choice == "Main":
                     for pct in range(100):
                         time.sleep(0.01)
                         progress.progress(pct + 1)
+    
+    with tab2:
 
                 # Batched inference with truncation to avoid OOM
                 lines = code_input.strip().split("\n")
