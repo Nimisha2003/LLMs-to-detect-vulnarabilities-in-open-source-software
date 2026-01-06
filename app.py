@@ -275,8 +275,14 @@ if nav == "Scanner":
                 code = uploaded_file.read().decode("utf-8")
             except Exception:
                 code = uploaded_file.getvalue().decode("utf-8") if hasattr(uploaded_file, 'getvalue') else ""
+            # don't modify `st.session_state['code_input']` here to avoid Streamlit state errors
         else:
-            code = st.text_area(f"Paste your {target_language} code here:", height=300)
+            # Text area uses a session key so it can be cleared by the button below
+            code = st.text_area(f"Paste your {target_language} code here:", key="code_input", height=300)
+            def _clear_paste():
+                st.session_state["code_input"] = ""
+
+            st.button("Clear Paste", key="clear_paste", on_click=_clear_paste)
 
         lang = target_language
 
